@@ -9,13 +9,9 @@ import (
 
 var DB *gorm.DB
 
-var test string
-
 func ConnectToDb() {
 
 	var err error
-
-	test = "what"
 
 	dsn := os.Getenv("DB")
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
