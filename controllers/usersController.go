@@ -16,6 +16,7 @@ func Signup(c *gin.Context) {
 	//get Email/pass from req body
 
 	var body struct {
+		Username string
 		Email    string
 		Password string
 	}
@@ -23,6 +24,14 @@ func Signup(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to read body",
+		})
+
+		return
+	}
+
+	if len(body.Password) < 6 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Password must be 6 or more characters",
 		})
 
 		return
@@ -42,7 +51,7 @@ func Signup(c *gin.Context) {
 
 	//create user
 
-	user := models.User{Email: body.Email, Password: string(hash)}
+	user := models.User{Username: body.Username, Email: body.Email, Password: string(hash)}
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {
@@ -61,6 +70,7 @@ func Login(c *gin.Context) {
 	//get email and password
 
 	var body struct {
+		Username string
 		Email    string
 		Password string
 	}
@@ -99,7 +109,6 @@ func Login(c *gin.Context) {
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 
-	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
 	if err != nil {

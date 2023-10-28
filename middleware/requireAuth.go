@@ -12,7 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func RequiredAuth(c *gin.Context) {
+func Authentication(c *gin.Context) {
 
 	tokenString, err := c.Cookie("Authorization")
 
